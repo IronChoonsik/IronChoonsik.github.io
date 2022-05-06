@@ -1,110 +1,85 @@
 ---
-layout: default
+layout: compress
 ---
 
-{% include left_sidebar.html %}
+<!DOCTYPE html>
+<html>
 
-<article class="post">
-  <h1>{{ page.title }}</h1>
+<head>
+  {% include head.html %}
+</head>
 
-  <div class="author" style="font-size: 0.8em;">
-    {% if page.author_username and page.author_username != blank and page.author_name and page.author_username != blank %}
-      <a href="{{ site.baseurl }}/{{ page.author_username }}">{{ page.author_name }}</a> &middot; {% include read_time.html content=page.content %}
-    {% else %}
-    {% include read_time.html content=page.content %}
-    {% endif %}
-  </div>
+<body>
+  {% include navbar.html %}
 
-  <div class="post-categories">
-    {% if post %}
-      {% assign categories = post.categories %}
-    {% else %}
-      {% assign categories = page.categories %}
-    {% endif %}
-    {% for category in categories %}
-      <a href="{{site.baseurl}}/categories/#{{category|slugize}}"
-      style="background: #4CAF50; color: #fff; text-decoration: none; padding: 2px 13px; border-radius: 50px; font-size: 14.5px;"> {{category}}</a>
-    {% endfor %}
-  </div>
-
-  <div class="entry">
-    <br>
-    {% assign content_para = content | split: "<p>" %}
-    {% for para in content_para %}
-      {{para}}
-      {% if forloop.index == 3 %}
-        {% include toc.html content=page.content skip_toc=page.skip_toc %}
-      {% endif %}
-      {% assign para_number = forloop.index | modulo: 10 %}
-      {% if para_number == 0 and page.show_ads %}
-        <div style="padding: 10px; padding-right: 20px; padding-left: 10px; border: 1px solid #ccc;">
-          <ins class="adsbygoogle"
-               style="display:block; text-align:center;"
-               data-ad-layout="in-article"
-               data-ad-format="fluid"
-               data-ad-client="ca-pub-1291724895555434"
-               data-ad-slot="5516822896"></ins>
-          <script>
-               (adsbygoogle = window.adsbygoogle || []).push({});
-          </script>
+  <section class="hero is-fullheight has-text-centered" id="post">
+    <div class="hero-body">
+      <div class="container">
+        <a href="{{page.url | relative_url}}" class="has-text-black" id="title">
+          <h1 class="title has-text-centered is-2 has-text-weight-semibold ">{{page.title}}</h1>
+        </a>
+        <hr class="has-background-black">
+        <div class="columns is-variable is-5">
+          <div class="column is-6">
+            <figure class="image is-16by9 has-shadow">
+              <img src="{{page.post-image}}" alt="{{post.title}}" id="post-image">
+            </figure>
+          </div>
+          <div class="subtitle column is-5 has-text-left-desktop has-text-left-fullhd has-text-left-tablet has-text-center-mobile">
+            {% unless page.description.size == 0 %}
+            <p id="description" class="content is-small has-text-weight-medium is-uppercase">{{page.description | strip | strip_html | strip_newlines }}</p>
+            {% endunless %}
+            <p class="subtitle is-6 is-uppercase has-text-weight-normal has-text-black-ter">Published on
+              <b>{{ page.date | date: "%-B %d, %Y" }}</b> by <a href="{% if site.author-url %}{{site.author-url}}{% else %}{{site.url}}{{site.baseurl}}/#about{% endif %}" target="_blank"><b class="has-text-link"><u>{{site.author-name}}</u></b>
+              </a>
+            </p>
+            {%- assign tags = page.tags -%}
+            {%- unless tags.size == 0 -%}
+            <p class="subtitle is-uppercase">
+              <i class="fas fa-tags"></i>
+              {% assign i = 0 %}
+              {% for tags in page.tags %}
+              <span class="tag is-link">{{page.tags[i]}}</span>
+              {% assign i = i | plus:1 %}
+              {% endfor %}
+            </p>
+            {%- endunless -%}
+            {% assign words = content | number_of_words %}
+            {%- unless content.size == 0 -%}
+            <p class="subtitle is-uppercase"><i class="fas fa-clock"></i> <b class="has-text-link">
+                {{ words | divided_by:180 }} min
+              </b>READ</p>
+            {%- endunless -%}
+          </div>
         </div>
-        <br>
-      {% endif %}
-      {% assign para_number_telegram = forloop.index | modulo: 10 %}
-      {% if para_number_telegram == 0 and page.show_telegram_signup %}
-        {% include telegram.html %}
-      {% endif %}
-    {% endfor %}
-  </div>
-
-  {% include share-bar.html %}
-
-  {% if page.author_username %}
-    {% include author_details.html author_username=page.author_username canonical_url=page.canonical_url author_name=page.author_name %}
-  {% endif %}
-
-  <div class="relatedPosts">
-
-    <h4>You May Also Enjoy</h4>
-
-    {% assign maxRelated = 4 %}
-    {% assign minCommonTags =  2 %}
-    {% assign maxRelatedCounter = 0 %}
-    {% for post in site.posts %}
-
-      {% assign sameTagCount = 0 %}
-      {% assign commonTags = '' %}
-
-      {% for category in post.categories %}
-        {% if post.url != page.url %}
-          {% assign contains_data = page.categories contains category %}
-          {% if page.categories contains category %}
-            {% assign sameTagCount = sameTagCount | plus: 1 %}
-            {% assign tagmarkup = category %}
-            {% assign commonTags = commonTags | append: tagmarkup %}
-          {% endif %}
-        {% endif %}
-      {% endfor %}
-
-      {% if sameTagCount >= minCommonTags %}
-        <div>
-          <h5>{{maxRelatedCounter | plus: 1}}. <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h5>
+        <div class="content has-text-justified-desktop has-text-justified-fullhd has-text-justified has-text-justified-tablet has-text-left-mobile">
+          <p>{{ content }}</p>
         </div>
-        {% assign maxRelatedCounter = maxRelatedCounter | plus: 1 %}
-        {% if maxRelatedCounter >= maxRelated %}
-          {% break %}
-        {% endif %}
-      {% endif %}
+        {% unless site.disqus-shortname == "" %}
+        <div class="disqus-comments" id="disqus_thread"></div>
+        {% endunless %}
+      </div>
+    </div>
+  </section>
+  {% include footer.html %}
+</body>
+<script>
+  /**
+   *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+   *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables*/
+  /*
+  var disqus_config = function () {
+  this.page.url = PAGE_URL;  Replace PAGE_URL with your page's canonical URL variable
+  this.page.identifier = PAGE_IDENTIFIER; Replace PAGE_IDENTIFIER with your page's unique identifier variable
+  };
+  */
+  (function () { /* DON'T EDIT BELOW THIS LINE */
+    var d = document,
+      s = d.createElement('script');
+    s.src = 'https://{{site.disqus-shortname}}.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+  })();
+</script>
 
-    {% endfor %}
-
-  </div>
-  <div class="container">
-    {% include feedback.html %}
-  </div>
-  <br>
-  {% include disqus.html %}
-  {% if site.sidebar %}
-    {% include sidebar.html %}
-  {% endif %}
-</article>
+</html>
