@@ -7,7 +7,7 @@ url: ''
 baseurl: 
 
 # Title of the Site
-title: IronChoonsik's Coding Log
+title: IronChoonsik's Coding Diary
 # Description of the Site
 description: Let's Solve Problems with Python Algorithms
 # URL of Image of the Site
@@ -18,7 +18,7 @@ site-keywords: Site, Template, Theme
 favicon-url: 
 
 # URL of the Image of Custom Hero Image (i.e., the image in the background of the very first section of the Homepage)
-heroimage: https://user-images.githubusercontent.com/99641242/167070146-0aac8ce3-9658-47a7-9e1d-f606a6a60535.png
+heroimage: https://item.kakaocdn.net/do/b5d3d6a7b67fbf5afdaffb79fffbf8b18f324a0b9c48f77dbce3a43bd11ce785
 
 
 # https://images.pexels.com/photos/220444/pexels-photo-220444.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940
